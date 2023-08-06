@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../api/events_api.dart';
+
 class MyLogin extends StatefulWidget {
   const MyLogin({Key? key}) : super(key: key);
 
@@ -29,7 +31,7 @@ class _MyLoginState extends State<MyLogin> {
       if (_formKey.currentState!.validate()) {
         final String email = _emailController.text;
         final String password = _passwordController.text;
-        final Response response = await  dio.post('http://ec2-3-83-46-123.compute-1.amazonaws.com:3003/clients/auth', data: {
+        final Response response = await EventsApi.post('/clients/auth', {
           'email': email,
           'password': password,
         });

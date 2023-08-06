@@ -22,13 +22,19 @@ class TravelNavigationBar extends StatelessWidget {
           children: List.generate(
             items.length,
                 (index) => Expanded(
-              child: Icon(
-                currentIndex == index
-                    ? items[index].selectedIcon
-                    : items[index].icon,
-                color: currentIndex == index
-                    ? Theme.of(context).primaryColor
-                    : null,
+              child: GestureDetector(
+                onTap: () => onTap(index),
+                child: Container(
+                  height: double.maxFinite,
+                  child: Icon(
+                    currentIndex == index
+                        ? items[index].selectedIcon
+                        : items[index].icon,
+                    color: currentIndex == index
+                        ? Theme.of(context).primaryColor
+                        : null,
+                  ),
+                ),
               ),
             ),
           )..insert(1, const Spacer()),

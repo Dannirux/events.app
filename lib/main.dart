@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_moviles/api/events_api.dart';
-import 'package:project_moviles/pages/events.dart';
+import 'package:project_moviles/pages/layout_user.dart';
 import 'package:project_moviles/pages/login.dart';
 import 'package:project_moviles/pages/newest.dart';
 import 'package:project_moviles/pages/register.dart';
@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
-  // EventsApi.configureDio();
+  EventsApi.configureDio();
   runApp(MyRunApp());
 }
 

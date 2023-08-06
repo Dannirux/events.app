@@ -162,17 +162,6 @@ class _UserInfoContainer extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.blue.shade600,
-              textStyle: context.subtitle1,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-            ),
-            child: const Text('+Follow'),
-          ),
         ],
       ),
     );
@@ -241,7 +230,7 @@ class _LikesAndSharesContainer extends StatelessWidget {
               Icons.check_circle_outlined,
               size: 26,
             ),
-            label: const Text('Checkin'),
+            label: const Text('Asistir'),
           ),
         ],
       ),

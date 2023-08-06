@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:project_moviles/api/events_api.dart';
 
 class MyRegister extends StatefulWidget {
   const MyRegister({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class _MyRegisterState extends State<MyRegister> {
         final String password = _passwordController.text;
         final String cellphone = _phoneController.text;
         final String address = _addressController.text;
-        final Response response = await  dio.post('http://ec2-3-83-46-123.compute-1.amazonaws.com:3003/clients', data: {
+        final Response response = await  EventsApi.post('/clients', {
           'names': names,
           'surnames': surnames,
           'phone': cellphone,

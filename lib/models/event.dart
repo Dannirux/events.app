@@ -38,4 +38,8 @@ class Event {
       images: List<String>.from(json['images']),
     );
   }
+
+  bool get isFollowedByMe => false;
+
+  set isFollowedByMe(bool isFollowedByMe) {}
 }

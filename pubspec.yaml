@@ -41,6 +41,8 @@ dependencies:
   get_it: ^7.2.0
   intl: ^0.17.0
   shared_preferences: ^2.2.0
+  flutter_slidable: ^3.0.0
+  date_picker_timeline: ^1.2.3
 
 dev_dependencies:
   flutter_test:

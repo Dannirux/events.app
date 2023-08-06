@@ -7,11 +7,21 @@ class EventsApi {
 
   static void configureDio() {
     ///Base url
-    _dio.options.baseUrl = 'http://ec2-3-83-46-123.compute-1.amazonaws.com:3003';
+    _dio.options.baseUrl = 'http://192.168.1.5:3003';
     _dio.options.headers = {
       HttpHeaders.contentTypeHeader: "application/json",
       HttpHeaders.acceptHeader: "application/json",
     };
+  }
+
+  static Future<Response> get(String path, [Map<String, dynamic> queryParameters = const {}]) async {
+      Response response = await _dio.get(path, queryParameters: queryParameters);
+      return response;
+  }
+
+  static Future<Response> post(String path, dynamic data) async {
+      Response response = await _dio.post(path, data: data);
+      return response;
   }
 
 
