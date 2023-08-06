@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:project_moviles/models/client_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/events_api.dart';
@@ -18,12 +21,13 @@ class _MyLoginState extends State<MyLogin> {
   bool showPass = true;
   bool isLoading = false;
 
-  void saveSessionState() async {
+  void saveSessionState(ModelClient modelClient) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isLoggedIn', true);
+    String clientJson = jsonEncode(modelClient.toJson());
+    prefs.setString('clientLogged', clientJson);
   }
   void _submit () async {
-    final Dio dio = Dio();
     try {
       setState(() {
         isLoading = true; // Activar el indicador de carga cuando se presiona el botón.
@@ -35,8 +39,10 @@ class _MyLoginState extends State<MyLogin> {
           'email': email,
           'password': password,
         });
-        saveSessionState();
-        Navigator.pushNamed(context, 'events');
+        Map<String, dynamic> responseData = response.data;
+        ModelClient modelClient = ModelClient.fromJson(responseData);
+        saveSessionState(modelClient);
+        Navigator.pushNamedAndRemoveUntil(context, modelClient.interests.isEmpty ? 'newest' : 'events', (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

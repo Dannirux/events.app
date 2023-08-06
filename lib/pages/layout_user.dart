@@ -24,21 +24,25 @@ class Events extends StatefulWidget {
 class _EventsComponent extends State<Events> {
 
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
-    MyPageHome(),
-    AllEvents()
-  ];
+
+  void _setIndexZero() {
+    setState(() {
+      _selectedIndex = 0;
+      print('El componente hijo notificó al componente padre. _selectedIndex = $_selectedIndex');
+    });
+  }
 
   void clearSessionState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('isLoggedIn');
-    Navigator.pushNamed(context, 'login');
+    prefs.remove('clientLogged');
+    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: const Text('Eventos', style: TextStyle(color: Colors.black))),
+        title: _selectedIndex == 1 ? Center(child: const Text('Eventos', style: TextStyle(color: Colors.black))): Text(''),
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
@@ -54,7 +58,9 @@ class _EventsComponent extends State<Events> {
           ),
         ],
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: _selectedIndex == 0
+          ? MyPageHome()
+          : AllEvents(onAction: _setIndexZero),
       extendBody: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(

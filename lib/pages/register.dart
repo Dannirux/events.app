@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:project_moviles/api/events_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/client_model.dart';
 
 class MyRegister extends StatefulWidget {
   const MyRegister({Key? key}) : super(key: key);
@@ -19,8 +24,14 @@ class _MyRegisterState extends State<MyRegister> {
   TextEditingController _addressController = TextEditingController();
   bool isLoading = false;
 
+  void saveSessionState(ModelClient modelClient) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', true);
+    String clientJson = jsonEncode(modelClient.toJson());
+    prefs.setString('clientLogged', clientJson);
+  }
+
   void _submit () async {
-    final Dio dio = Dio();
     try {
       setState(() {
         isLoading = true; // Activar el indicador de carga cuando se presiona el botón.
@@ -40,7 +51,10 @@ class _MyRegisterState extends State<MyRegister> {
           'email': email,
           'password': password,
         });
-        Navigator.pushNamed(context, 'newest');
+        Map<String, dynamic> responseData = response.data;
+        ModelClient modelClient = ModelClient.fromJson(responseData);
+        saveSessionState(modelClient);
+        Navigator.pushNamedAndRemoveUntil(context, 'newest', (route) => false);
       } else {
         // Navigator.pushNamed(context, 'newest');
         ScaffoldMessenger.of(context).showSnackBar(

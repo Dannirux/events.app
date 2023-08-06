@@ -23,6 +23,10 @@ class EventsApi {
       Response response = await _dio.post(path, data: data);
       return response;
   }
+  static Future<Response> put(String path, dynamic data) async {
+    Response response = await _dio.put(path, data: data);
+    return response;
+  }
 
 
 }
