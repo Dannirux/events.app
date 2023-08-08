@@ -141,6 +141,7 @@ class _MyLoginState extends State<MyLogin> {
                             TextFormField(
                               controller: _emailController,
                               style: const TextStyle(color: Colors.black),
+                              keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                   fillColor: Colors.grey.shade100,
                                   filled: true,

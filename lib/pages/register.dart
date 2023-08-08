@@ -31,10 +31,11 @@ class _MyRegisterState extends State<MyRegister> {
     prefs.setString('clientLogged', clientJson);
   }
 
-  void _submit () async {
+  void _submit() async {
     try {
       setState(() {
-        isLoading = true; // Activar el indicador de carga cuando se presiona el botón.
+        isLoading =
+            true; // Activar el indicador de carga cuando se presiona el botón.
       });
       if (_formKey.currentState!.validate()) {
         final String names = _namesController.text;
@@ -43,7 +44,7 @@ class _MyRegisterState extends State<MyRegister> {
         final String password = _passwordController.text;
         final String cellphone = _phoneController.text;
         final String address = _addressController.text;
-        final Response response = await  EventsApi.post('/clients', {
+        final Response response = await EventsApi.post('/clients', {
           'names': names,
           'surnames': surnames,
           'phone': cellphone,
@@ -64,14 +65,17 @@ class _MyRegisterState extends State<MyRegister> {
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red, // Set the background color to red.
-            duration: Duration(seconds: 3), // Set the duration the snackbar will be visible.
+            duration: Duration(
+                seconds: 3), // Set the duration the snackbar will be visible.
           ),
         );
       }
     } catch (err) {
       print(err);
       var error = '';
-      error = err is DioError ? err!.response!.data!["message"].toString() : err.toString();
+      error = err is DioError
+          ? err!.response!.data!["message"].toString()
+          : err.toString();
       print(err is DioError ? err!.response!.data!.toString() : err.toString());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -80,12 +84,14 @@ class _MyRegisterState extends State<MyRegister> {
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.red, // Set the background color to red.
-          duration: Duration(seconds: 3), // Set the duration the snackbar will be visible.
+          duration: Duration(
+              seconds: 3), // Set the duration the snackbar will be visible.
         ),
       );
     } finally {
       setState(() {
-        isLoading = false; // Activar el indicador de carga cuando se presiona el botón.
+        isLoading =
+            false; // Activar el indicador de carga cuando se presiona el botón.
       });
     }
   }
@@ -115,7 +121,7 @@ class _MyRegisterState extends State<MyRegister> {
                     Container(
                       padding: const EdgeInsets.only(left: 35, top: 30),
                       child: const Text(
-                        'Registrar\nCuenta',
+                        'Registrar Cuenta \n',
                         style: TextStyle(color: Colors.white, fontSize: 33),
                       ),
                     ),
@@ -127,7 +133,7 @@ class _MyRegisterState extends State<MyRegister> {
                           children: [
                             TextFormField(
                               controller: _namesController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -139,10 +145,13 @@ class _MyRegisterState extends State<MyRegister> {
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: const BorderSide(
                                       color: Colors.black,
+                                      width: 2.0,
                                     ),
                                   ),
                                   hintText: "Nombres",
-                                  hintStyle: const TextStyle(color: Colors.white),
+                                  hintStyle: const TextStyle(color: Color.fromARGB(255, 59, 76, 84)),
+                                  filled: true,
+                                  fillColor: const Color.fromARGB(213, 245, 245, 245),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   )),
@@ -158,7 +167,7 @@ class _MyRegisterState extends State<MyRegister> {
                             ),
                             TextFormField(
                               controller: _surnamesController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -170,10 +179,13 @@ class _MyRegisterState extends State<MyRegister> {
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: const BorderSide(
                                       color: Colors.black,
+                                      width: 2.0,
                                     ),
                                   ),
                                   hintText: "Apellidos",
-                                  hintStyle: const TextStyle(color: Colors.white),
+                                  hintStyle: const TextStyle(color: Color.fromARGB(255, 59, 76, 84)),
+                                  filled: true,
+                                  fillColor: const Color.fromARGB(213, 245, 245, 245),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   )),
@@ -189,7 +201,7 @@ class _MyRegisterState extends State<MyRegister> {
                             ),
                             TextFormField(
                               controller: _emailController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -201,10 +213,13 @@ class _MyRegisterState extends State<MyRegister> {
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: const BorderSide(
                                       color: Colors.black,
+                                      width: 2.0,
                                     ),
                                   ),
                                   hintText: "Email",
-                                  hintStyle: const TextStyle(color: Colors.white),
+                                  hintStyle: const TextStyle(color: Color.fromARGB(255, 59, 76, 84)),
+                                  filled: true,
+                                  fillColor: const Color.fromARGB(213, 245, 245, 245),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   )),
@@ -220,7 +235,7 @@ class _MyRegisterState extends State<MyRegister> {
                             ),
                             TextFormField(
                               controller: _passwordController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               obscureText: true,
                               decoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
@@ -233,10 +248,13 @@ class _MyRegisterState extends State<MyRegister> {
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: const BorderSide(
                                       color: Colors.black,
+                                      width: 2.0,
                                     ),
                                   ),
                                   hintText: "Contraseña",
-                                  hintStyle: const TextStyle(color: Colors.white),
+                                  hintStyle: const TextStyle(color: Color.fromARGB(255, 59, 76, 84)),
+                                  filled: true,
+                                  fillColor: const Color.fromARGB(213, 245, 245, 245),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   )),
@@ -252,7 +270,7 @@ class _MyRegisterState extends State<MyRegister> {
                             ),
                             TextFormField(
                               controller: _phoneController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -264,10 +282,13 @@ class _MyRegisterState extends State<MyRegister> {
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: const BorderSide(
                                       color: Colors.black,
+                                      width: 2.0,
                                     ),
                                   ),
                                   hintText: "Celular",
-                                  hintStyle: const TextStyle(color: Colors.white),
+                                  hintStyle: const TextStyle(color: Color.fromARGB(255, 59, 76, 84)),
+                                  filled: true,
+                                  fillColor: const Color.fromARGB(213, 245, 245, 245),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   )),
@@ -283,7 +304,7 @@ class _MyRegisterState extends State<MyRegister> {
                             ),
                             TextFormField(
                               controller: _addressController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -295,10 +316,13 @@ class _MyRegisterState extends State<MyRegister> {
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: const BorderSide(
                                       color: Colors.black,
+                                      width: 2.0,
                                     ),
                                   ),
                                   hintText: "Dirección",
-                                  hintStyle: const TextStyle(color: Colors.white),
+                                  hintStyle: const TextStyle(color: Color.fromARGB(255, 59, 76, 84)),
+                                  filled: true,
+                                  fillColor: const Color.fromARGB(213, 245, 245, 245),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   )),

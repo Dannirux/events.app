@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_moviles/api/events_api.dart';
 import 'package:project_moviles/components/detail/widgets/place_images_page_view.dart';
 import 'package:project_moviles/extensions/text_theme_x.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../models/event.dart';
 import '../../../models/place.dart';
@@ -11,16 +15,18 @@ import '../../events/gradient_status_tag.dart';
 import '../../events/translate_animation.dart';
 
 class AnimatedDetailHeader extends StatelessWidget {
+  
   const AnimatedDetailHeader({
     super.key,
     required this.event,
     required this.topPercent,
-    required this.bottomPercent,
+    required this.bottomPercent, 
   });
 
   final Event event;
   final double topPercent;
   final double bottomPercent;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +180,48 @@ class _LikesAndSharesContainer extends StatelessWidget {
   });
 
   final Event event;
+  static String _clientId = "";
+
+  Future<void> _loadClientId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    late String? clientJson = prefs.getString('clientLogged');
+
+    if (clientJson != null) {
+      Map<String, dynamic> clientData =
+          jsonDecode(clientJson); // Decodifica el JSON a un mapa
+       _clientId = clientData['_id']; // Accede al campo 'names' del mapa
+    
+    }
+  }
+
+   void _asistir() async{
+
+    final Map<String, dynamic> requestBody = {
+      "client": _clientId,
+      "event": event.id
+    };
+
+    print(requestBody);
+    try {
+      // Realizar la solicitud POST
+      final Response response = await EventsApi.post('/invitations', requestBody);
+
+      // Verificar la respuesta y realizar acciones según sea necesario
+      if (response.statusCode == 201) {
+        // La solicitud se realizó con éxito
+        print("Invitación enviada exitosamente");
+        // Puedes actualizar la UI según sea necesario aquí
+      } else {
+        // Ocurrió un error en la solicitud
+        print("Error al enviar la invitación");
+        // Puedes manejar el error o mostrar un mensaje al usuario aquí
+      }
+    } catch (err) {
+      // Manejar el error en caso de que ocurra una excepción
+      print("Error al enviar la invitación: $err");
+      // Puedes manejar el error o mostrar un mensaje al usuario aquí
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,7 +265,9 @@ class _LikesAndSharesContainer extends StatelessWidget {
           ),
           const Spacer(),
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () async{
+              _loadClientId().then((value) => _asistir());
+            },
             style: TextButton.styleFrom(
               backgroundColor: Colors.blue.shade100,
               foregroundColor: Colors.blue.shade600,

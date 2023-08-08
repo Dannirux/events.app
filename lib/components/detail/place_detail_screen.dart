@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:project_moviles/components/detail/widgets/animated_detail_header.dart';
 import 'package:project_moviles/components/detail/widgets/place_comments_widget.dart';
 import 'package:project_moviles/extensions/text_theme_x.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/event.dart';
 import '../../models/place.dart';
@@ -109,7 +112,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                       return AnimatedDetailHeader(
                         topPercent: ((1 - percent) / .7).clamp(0.0, 1.0),
                         bottomPercent: bottomPercent,
-                        event: widget.event,
+                        event: widget.event
                       );
                     },
                   ),

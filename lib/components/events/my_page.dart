@@ -1,8 +1,11 @@
-  import 'package:flutter/cupertino.dart';
+  import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_moviles/components/home/check_events.dart';
 import 'package:project_moviles/components/home/date_now.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyPageHome extends StatefulWidget {
   const MyPageHome({super.key});
@@ -12,6 +15,27 @@ class MyPageHome extends StatefulWidget {
 }
 
 class _MyPageHomeState extends State<MyPageHome> {
+  String _clientName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadClientName();
+  }
+
+  Future<void> _loadClientName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    late String? clientJson = prefs.getString('clientLogged');
+
+    if (clientJson != null) {
+    Map<String, dynamic> clientData = jsonDecode(clientJson);  // Decodifica el JSON a un mapa
+    String clientName = clientData['names'];  // Accede al campo 'names' del mapa
+    setState(() {
+      _clientName = clientName;  // Establece el nombre del cliente en _clientName
+    });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -29,14 +53,14 @@ class _MyPageHomeState extends State<MyPageHome> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "Bienvenido,",
+                        text: "Bienvenido, ",
                         style: GoogleFonts.montserrat(
                           color: Colors.black,
                           fontSize: 25,
                         ),
                       ),
                       TextSpan(
-                        text: "Danny!",
+                        text: "$_clientName!",
                         style: GoogleFonts.montserrat(
                           color: Colors.black,
                           fontSize: 25,

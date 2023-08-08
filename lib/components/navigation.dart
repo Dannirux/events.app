@@ -25,7 +25,9 @@ class TravelNavigationBar extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => onTap(index),
                 child: Container(
+                  color: Colors.white,
                   height: double.maxFinite,
+                  width: double.infinity,
                   child: Icon(
                     currentIndex == index
                         ? items[index].selectedIcon
