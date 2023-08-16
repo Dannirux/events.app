@@ -12,6 +12,7 @@ class GoogleMapScreen extends StatefulWidget {
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late GoogleMapController mapController;
   late Position currentPosition;
+  Set<Marker> markers = {};
 
   @override
   void initState() {
@@ -70,8 +71,16 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     );
     setState(() {
       currentPosition = position;
+      markers.add(
+        Marker(
+          markerId: MarkerId('currentLocation'),
+          position: LatLng(position.latitude, position.longitude),
+          infoWindow: InfoWindow(title: 'Mi ubicación'),
+        ),
+      );
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +100,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           ),
           zoom: 15.0,
         ),
+        markers: markers,
       )
           : Center(child: CircularProgressIndicator()),
     );
