@@ -11,8 +11,9 @@ class GoogleMapScreen extends StatefulWidget {
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late GoogleMapController mapController;
-  late Position currentPosition;
+  Position? currentPosition;
   Set<Marker> markers = {};
+  bool isMapReady = false;
 
   @override
   void initState() {
@@ -26,46 +27,14 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       _getCurrentLocation();
     } else if (status.isDenied) {
       // Handle denied permission
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Permiso denegado'),
-            content: Text('Necesita agregar el permiso de localización.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      // ...
     } else if (status.isPermanentlyDenied) {
       // Handle permanently denied permission
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Permiso denegado'),
-            content: Text('Necesita agregar el permiso de localización. Vaya a ajustes para activarlo.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      // ...
     }
   }
 
-  void _getCurrentLocation() async {
+  Future<void> _getCurrentLocation() async {
     final Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -78,31 +47,40 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           infoWindow: InfoWindow(title: 'Mi ubicación'),
         ),
       );
+      isMapReady = true;
+      mapController.animateCamera(
+        CameraUpdate.newLatLngZoom(
+          LatLng(position.latitude, position.longitude),
+          15.0,
+        ),
+      );
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final LatLng quitoLatLng = LatLng(-0.180653, -78.467834);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Mi localización'),
       ),
-      body: currentPosition != null
-          ? GoogleMap(
+      body: GoogleMap(
         onMapCreated: (controller) {
           mapController = controller;
         },
         initialCameraPosition: CameraPosition(
-          target: LatLng(
-            currentPosition.latitude,
-            currentPosition.longitude,
-          ),
+          target: quitoLatLng,
           zoom: 15.0,
         ),
-        markers: markers,
-      )
-          : Center(child: CircularProgressIndicator()),
+        markers: isMapReady && currentPosition != null ? markers : {},
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    mapController.dispose();
+    super.dispose();
   }
 }
