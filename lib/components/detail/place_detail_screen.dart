@@ -160,31 +160,6 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                     ),
                   ),
                 ),
-                /*SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 180,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemExtent: 150,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemCount: TravelPlace.collectionPlaces.length,
-                      itemBuilder: (context, index) {
-                        final collectionPlace =
-                            TravelPlace.collectionPlaces[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              collectionPlace.imagesUrl.first,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),*/
                 const SliverToBoxAdapter(child: SizedBox(height: 150))
               ],
             ),

@@ -26,16 +26,16 @@ class Event {
   // Método factory para crear una instancia de Event desde el JSON decodificado
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-      id: json['_id'],
-      name: json['name'],
-      description: json['description'],
-      capacity: json['capacity'],
-      date: DateTime.parse(json['_date']),
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
-      address: json['address'],
-      university: json['university'],
-      images: List<String>.from(json['images']),
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      capacity: json['capacity'] ?? 0,
+      date: json['_date'] != null ? DateTime.parse(json['_date']) : DateTime.now(),
+      startDate: json['startDate'] != null ? DateTime.parse(json['startDate']) : DateTime.now(),
+      endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : DateTime.now(),
+      address: json['address'] ?? '',
+      university: json['university'] ?? '',
+      images: json['images'] != null ? List<String>.from(json['images']) : [],
     );
   }
 
