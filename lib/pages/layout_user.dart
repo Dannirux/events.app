@@ -8,6 +8,7 @@ import 'package:project_moviles/api/events_api.dart';
 import 'package:project_moviles/components/events/my_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/detail/place_detail_screen.dart';
+import '../components/detail/widgets/GoogleMapsScreen.dart';
 import '../components/events/all_events.dart';
 import '../components/events/place_cards.dart';
 import '../components/navigation.dart';
@@ -16,19 +17,19 @@ import '../models/place.dart';
 
 class Events extends StatefulWidget {
   const Events({super.key});
-  
+
   @override
   State<Events> createState() => _EventsComponent();
 }
 
 class _EventsComponent extends State<Events> {
-
   int _selectedIndex = 0;
 
   void _setIndexZero() {
     setState(() {
       _selectedIndex = 0;
-      print('El componente hijo notificó al componente padre. _selectedIndex = $_selectedIndex');
+      print(
+          'El componente hijo notificó al componente padre. _selectedIndex = $_selectedIndex');
     });
   }
 
@@ -38,16 +39,24 @@ class _EventsComponent extends State<Events> {
     prefs.remove('clientLogged');
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _selectedIndex == 1 ? Center(child: const Text('Eventos', style: TextStyle(color: Colors.black))): Text(''),
+        title: _selectedIndex == 1
+            ? Center(
+                child: const Text('Eventos',
+                    style: TextStyle(color: Colors.black)))
+            : Text(''),
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: clearSessionState,
-          icon: const Icon(Icons.logout_outlined, color: Colors.black,),
+          icon: const Icon(
+            Icons.logout_outlined,
+            color: Colors.black,
+          ),
         ),
         actions: [
           IconButton(
@@ -64,7 +73,12 @@ class _EventsComponent extends State<Events> {
       extendBody: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GoogleMapScreen()),
+          );
+        },
         child: const Icon(Icons.location_on),
       ),
       bottomNavigationBar: TravelNavigationBar(
@@ -87,5 +101,4 @@ class _EventsComponent extends State<Events> {
       ),
     );
   }
-
 }

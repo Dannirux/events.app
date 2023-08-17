@@ -25,7 +25,9 @@ class TravelNavigationBar extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => onTap(index),
                 child: Container(
+                  color: Colors.white,
                   height: double.maxFinite,
+                  width: double.infinity,
                   child: Icon(
                     currentIndex == index
                         ? items[index].selectedIcon
@@ -71,7 +73,15 @@ class _NavPainter extends CustomPainter {
       ..lineTo(w, h)
       ..lineTo(0, h);
 
-    canvas.drawShadow(path, Colors.black26, 10, false);
+    final shadowPath = Path()
+      ..lineTo(w5 - 75, 5) // Adjust shadow position
+      ..cubicTo((w5 - 50), 5, (w5 - 35), h5 + 5, w5, h6 + 5) // Adjust shadow position
+      ..cubicTo((w5 + 35), h5 + 5, (w5 + 50), 5, (w5 + 75), 5) // Adjust shadow position
+      ..lineTo(w, 5) // Adjust shadow position
+      ..lineTo(w, h)
+      ..lineTo(0, h);
+
+    canvas.drawShadow(shadowPath, Colors.black26, 10, false); // Add shadow
     canvas.drawPath(path, Paint()..color = Colors.white);
   }
 
