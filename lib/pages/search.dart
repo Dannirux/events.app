@@ -40,7 +40,6 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   onSearch(String search) {
-    print('no debo');
     setState(() {
       eventsFuture = getEvents(search);
     });

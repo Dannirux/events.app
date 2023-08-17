@@ -151,10 +151,6 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                           const SizedBox(height: 10),
                           Text(widget.event.description),
                           const SizedBox(height: 20),
-                          const Text(
-                            'PLACES IN THIS COLLECTION',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
                         ],
                       ),
                     ),

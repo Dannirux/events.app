@@ -110,8 +110,12 @@ class _CheckEventsState extends State<CheckEvents>
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (snapshot.hasData) {
                       List<Event> events = snapshot.data!;
-                      return ContainerChecks(
-                          events: events); // Pasar la lista de eventos
+                      if (!events.isEmpty) {
+                        return ContainerChecks(
+                            events: events); //
+                      } else {
+                        return Center(child: Text('No se encontraron eventos'));
+                      }
                     } else {
                       return Center(child: Text('No se encontraron eventos'));
                     }
