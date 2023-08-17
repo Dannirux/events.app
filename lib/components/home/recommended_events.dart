@@ -48,6 +48,7 @@ class _RecommendedEventsState extends State<RecommendedEvents>
     } catch (err, stackTrace) {
       print("Error: $err");
       print("Stack trace: $stackTrace");
+      print(err is DioError ? err!.response!.data!["message"].toString() : err.toString());
       return [];
     }
   }
