@@ -15,18 +15,16 @@ import '../../events/gradient_status_tag.dart';
 import '../../events/translate_animation.dart';
 
 class AnimatedDetailHeader extends StatelessWidget {
-  
   const AnimatedDetailHeader({
     super.key,
     required this.event,
     required this.topPercent,
-    required this.bottomPercent, 
+    required this.bottomPercent,
   });
 
   final Event event;
   final double topPercent;
   final double bottomPercent;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +148,8 @@ class _UserInfoContainer extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage('https://aka-cdn.uce.edu.ec/ares/tmp/SIIU/anuncios/sello_400.png'),
+            backgroundImage: NetworkImage(
+                'https://aka-cdn.uce.edu.ec/ares/tmp/SIIU/anuncios/sello_400.png'),
           ),
           const SizedBox(width: 10),
           Column(
@@ -162,7 +161,7 @@ class _UserInfoContainer extends StatelessWidget {
                 style: context.bodyText1,
               ),
               Text(
-                'yesterday at 9:10 p.m.',
+                event.startDate.toString().substring(0, 16),
                 style: context.bodyText2.copyWith(color: Colors.grey),
               ),
             ],
@@ -174,12 +173,17 @@ class _UserInfoContainer extends StatelessWidget {
   }
 }
 
-class _LikesAndSharesContainer extends StatelessWidget {
-  const _LikesAndSharesContainer({
-    required this.event,
-  });
-
+class _LikesAndSharesContainer extends StatefulWidget {
   final Event event;
+  const _LikesAndSharesContainer({required this.event});
+
+  @override
+  State<_LikesAndSharesContainer> createState() =>
+      _LikesAndSharesContainerState();
+}
+
+class _LikesAndSharesContainerState extends State<_LikesAndSharesContainer> {
+  bool asistir = false;
   static String _clientId = "";
 
   Future<void> _loadClientId() async {
@@ -189,13 +193,11 @@ class _LikesAndSharesContainer extends StatelessWidget {
     if (clientJson != null) {
       Map<String, dynamic> clientData =
           jsonDecode(clientJson); // Decodifica el JSON a un mapa
-       _clientId = clientData['_id']; // Accede al campo 'names' del mapa
-    
+      _clientId = clientData['_id']; // Accede al campo 'names' del mapa
     }
   }
 
-   void _asistir(BuildContext context) async{
-
+  void _asistir(Event event) async {
     final Map<String, dynamic> requestBody = {
       "client": _clientId,
       "event": event.id
@@ -204,7 +206,8 @@ class _LikesAndSharesContainer extends StatelessWidget {
     print(requestBody);
     try {
       // Realizar la solicitud POST
-      final Response response = await EventsApi.post('/invitations', requestBody);
+      final Response response =
+          await EventsApi.post('/invitations', requestBody);
 
       // Verificar la respuesta y realizar acciones según sea necesario
       if (response.statusCode == 201) {
@@ -280,8 +283,11 @@ class _LikesAndSharesContainer extends StatelessWidget {
           ),
           const Spacer(),
           TextButton.icon(
-            onPressed: () async{
-              _loadClientId().then((value) => _asistir(context));
+            onPressed: () async {
+              _loadClientId().then((value) => _asistir(widget.event));
+              setState(() {
+                asistir = true;
+              });
             },
             style: TextButton.styleFrom(
               backgroundColor: Colors.blue.shade100,
@@ -291,11 +297,14 @@ class _LikesAndSharesContainer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
               ),
             ),
-            icon: const Icon(
+            icon: asistir? const Icon(
+              Icons.cancel_outlined,
+              size: 26,
+            ) :const Icon(
               Icons.check_circle_outlined,
               size: 26,
             ),
-            label: const Text('Asistir'),
+            label: Text(asistir? "Cancelar" : "Asistir"),
           ),
         ],
       ),
