@@ -4,7 +4,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../models/event.dart';
+
 class GoogleMapScreen extends StatefulWidget {
+  final List<Event> events;
+
+  GoogleMapScreen({required this.events});
+
   @override
   _GoogleMapScreenState createState() => _GoogleMapScreenState();
 }
@@ -35,25 +41,46 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   }
 
   Future<void> _getCurrentLocation() async {
-    final Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+    try {
+      final Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      setState(() {
+        currentPosition = position;
+        _initializeMarkers();
+      });
+    } catch (e) {
+      print('Error obteniendo la ubicación actual: $e');
+    }
+  }
+
+  void _initializeMarkers() {
     setState(() {
-      currentPosition = position;
-      markers.add(
-        Marker(
-          markerId: MarkerId('currentLocation'),
-          position: LatLng(position.latitude, position.longitude),
-          infoWindow: InfoWindow(title: 'Mi ubicación'),
-        ),
-      );
+      for (var event in widget.events) {
+        markers.add(
+          Marker(
+            markerId: MarkerId(event.id),
+            position: LatLng(event.latitude, event.longitude),
+            infoWindow: InfoWindow(title: event.name),
+          ),
+        );
+      }
+      if (currentPosition != null) {
+        markers.add(
+          Marker(
+            markerId: MarkerId('currentLocation'),
+            position: LatLng(currentPosition!.latitude, currentPosition!.longitude),
+            infoWindow: InfoWindow(title: 'Mi ubicación'),
+          ),
+        );
+        mapController.animateCamera(
+          CameraUpdate.newLatLngZoom(
+            LatLng(currentPosition!.latitude, currentPosition!.longitude),
+            13.0,
+          ),
+        );
+      }
       isMapReady = true;
-      mapController.animateCamera(
-        CameraUpdate.newLatLngZoom(
-          LatLng(position.latitude, position.longitude),
-          15.0,
-        ),
-      );
     });
   }
 
@@ -63,17 +90,20 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mi localización'),
+        title: Text('Eventos'),
       ),
       body: GoogleMap(
         onMapCreated: (controller) {
           mapController = controller;
+          _checkLocationPermission();
         },
-        initialCameraPosition: CameraPosition(
-          target: quitoLatLng,
-          zoom: 15.0,
-        ),
-        markers: isMapReady && currentPosition != null ? markers : {},
+        initialCameraPosition: currentPosition != null
+            ? CameraPosition(
+          target: LatLng(currentPosition!.latitude, currentPosition!.longitude),
+          zoom: 12.0,
+        )
+            : CameraPosition(target: quitoLatLng, zoom: 12.0),
+        markers: isMapReady ? markers : {},
       ),
     );
   }

@@ -10,6 +10,8 @@ class Event {
   String university;
   List<String> images;
   List<String> categories;
+  double latitude; // Propiedad para latitud
+  double longitude; // Propiedad para longitud
 
   Event({
     required this.id,
@@ -23,6 +25,8 @@ class Event {
     required this.university,
     required this.images,
     required this.categories,
+    required this.latitude, // Agregada la latitud
+    required this.longitude, // Agregada la longitud
   });
 
   // Método factory para crear una instancia de Event desde el JSON decodificado
@@ -39,6 +43,8 @@ class Event {
       university: json['university'] ?? '',
       images: json['images'] != null ? List<String>.from(json['images']) : [],
       categories: json['categories'] != null ? List<String>.from(json['categories']) : [],
+      latitude: 0.0, // Valor temporal, se actualiza en el método getMyEvents
+      longitude: 0.0, // Valor temporal, se actualiza en el método getMyEvents
     );
   }
 

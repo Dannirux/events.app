@@ -1,19 +1,16 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project_moviles/api/events_api.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_moviles/components/events/my_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../components/detail/place_detail_screen.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
+import '../api/GoogleMapsApi.dart';
 import '../components/detail/widgets/GoogleMapsScreen.dart';
 import '../components/events/all_events.dart';
-import '../components/events/place_cards.dart';
 import '../components/navigation.dart';
+import '../api/events_api.dart';
 import '../models/event.dart';
-import '../models/place.dart';
 
 class Events extends StatefulWidget {
   const Events({super.key});
@@ -40,14 +37,60 @@ class _EventsComponent extends State<Events> {
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
 
+  Future<List<Event>> getMyEvents(String status) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? clientJson = prefs.getString('clientLogged');
+
+      String codigoCliente = "";
+
+      if (clientJson != null) {
+        Map<String, dynamic> clientData = jsonDecode(clientJson);
+        codigoCliente = clientData['_id'];
+      }
+
+      String endpoint = '/events/recommendation/$codigoCliente';
+      String query = status == 'no' ? '?' : '?interest=$status';
+      final Response response = await EventsApi.get(endpoint + query);
+
+      List<dynamic> data = response.data['data'];
+      List<Event> events = [];
+
+      for (final eventJson in data) {
+        // Obtener las coordenadas desde Google Maps API
+        Map<String, dynamic>? coordinates =
+        await GoogleMapsApi.getCoordinatesFromAddress(eventJson['address']);
+
+        if (coordinates != null) {
+          double latitude = coordinates['lat'];
+          double longitude = coordinates['lng'];
+
+          // Crear una instancia de Event con las coordenadas
+          Event event = Event.fromJson(eventJson);
+          event.latitude = latitude;
+          event.longitude = longitude;
+          events.add(event);
+        }
+      }
+
+      return events;
+    } catch (err, stackTrace) {
+      print("Error: $err");
+      print("Stack trace: $stackTrace");
+      print(err is DioError
+          ? err!.response!.data!["message"].toString()
+          : err.toString());
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: _selectedIndex == 1
             ? Center(
-                child: const Text('Eventos',
-                    style: TextStyle(color: Colors.black)))
+            child: const Text('Eventos', style: TextStyle(color: Colors.black)))
             : Text(''),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -71,13 +114,24 @@ class _EventsComponent extends State<Events> {
           ? MyPageHome()
           : AllEvents(onAction: _setIndexZero),
       extendBody: true,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // Cambio de ubicación del botón flotante
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => GoogleMapScreen()),
-          );
+        onPressed: () async {
+          try {
+            List<Event> recommendedEvents = await getMyEvents("no");
+            List<LatLng> eventCoordinates =
+            recommendedEvents.map((event) => LatLng(event.latitude, event.longitude)).toList();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GoogleMapScreen(
+                  events: recommendedEvents, // Cambio aquí
+                ),
+              ),
+            );
+          } catch (error) {
+            print("Error obteniendo eventos recomendados: $error");
+          }
         },
         child: const Icon(Icons.location_on),
       ),
