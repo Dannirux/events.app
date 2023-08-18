@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart'; // Importar el paquete Geolocator
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -58,6 +58,15 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             markerId: MarkerId(event.id),
             position: LatLng(event.latitude, event.longitude),
             infoWindow: InfoWindow(title: event.name),
+          ),
+        );
+      }
+      if (currentPosition != null) {
+        markers.add(
+          Marker(
+            markerId: MarkerId('currentLocation'),
+            position: LatLng(currentPosition!.latitude, currentPosition!.longitude),
+            infoWindow: InfoWindow(title: 'Mi ubicación'),
           ),
         );
       }
