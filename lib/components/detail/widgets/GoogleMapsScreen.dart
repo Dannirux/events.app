@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class GoogleMapScreen extends StatefulWidget {
+  final List<LatLng> eventCoordinates;
+
+  GoogleMapScreen({required this.eventCoordinates});
+
   @override
   _GoogleMapScreenState createState() => _GoogleMapScreenState();
 }
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late GoogleMapController mapController;
-  Position? currentPosition;
   Set<Marker> markers = {};
   bool isMapReady = false;
 
@@ -24,7 +26,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   Future<void> _checkLocationPermission() async {
     final PermissionStatus status = await Permission.location.request();
     if (status.isGranted) {
-      _getCurrentLocation();
+      _initializeMarkers();
     } else if (status.isDenied) {
       // Handle denied permission
       // ...
@@ -34,26 +36,18 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     }
   }
 
-  Future<void> _getCurrentLocation() async {
-    final Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+  void _initializeMarkers() {
     setState(() {
-      currentPosition = position;
-      markers.add(
-        Marker(
-          markerId: MarkerId('currentLocation'),
-          position: LatLng(position.latitude, position.longitude),
-          infoWindow: InfoWindow(title: 'Mi ubicación'),
-        ),
-      );
+      for (var coordinate in widget.eventCoordinates) {
+        markers.add(
+          Marker(
+            markerId: MarkerId(coordinate.toString()),
+            position: coordinate,
+            infoWindow: InfoWindow(title: 'Evento'),
+          ),
+        );
+      }
       isMapReady = true;
-      mapController.animateCamera(
-        CameraUpdate.newLatLngZoom(
-          LatLng(position.latitude, position.longitude),
-          15.0,
-        ),
-      );
     });
   }
 
@@ -73,7 +67,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           target: quitoLatLng,
           zoom: 15.0,
         ),
-        markers: isMapReady && currentPosition != null ? markers : {},
+        markers: isMapReady ? markers : {},
       ),
     );
   }
