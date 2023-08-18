@@ -37,6 +37,51 @@ class _EventsComponent extends State<Events> {
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
 
+  Future<List<Event>> getMyInvitationalEvents(String status) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? clientJson = prefs.getString('clientLogged');
+
+      String codigoCliente = "";
+
+      if (clientJson != null) {
+        Map<String, dynamic> clientData = jsonDecode(clientJson);
+        codigoCliente = clientData['_id'];
+      }
+
+      final Response response = await EventsApi.get(
+          '/invitations?client=' + codigoCliente + '&status=$status');
+      List<dynamic> data = response.data['data'];
+
+      List<Event> events = [];
+
+      for (final eventJson in data) {
+        Event event = Event.fromJson(eventJson['event']);
+
+        // Obtener las coordenadas desde Google Maps API
+        Map<String, dynamic>? coordinates =
+        await GoogleMapsApi.getCoordinatesFromAddress(event.address);
+
+        if (coordinates != null) {
+          double latitude = coordinates['lat'];
+          double longitude = coordinates['lng'];
+
+          // Agregar coordenadas a eventos de invitación
+          event.latitude = latitude;
+          event.longitude = longitude;
+
+          events.add(event);
+        }
+      }
+
+      return events;
+    } catch (err, stackTrace) {
+      print("Error: $err");
+      print("Stack trace: $stackTrace");
+      return [];
+    }
+  }
+
   Future<List<Event>> getMyEvents(String status) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -72,6 +117,10 @@ class _EventsComponent extends State<Events> {
           events.add(event);
         }
       }
+
+      // Agregar eventos de invitación con coordenadas
+      List<Event> invitationalEvents = await getMyInvitationalEvents(status);
+      events.addAll(invitationalEvents);
 
       return events;
     } catch (err, stackTrace) {
@@ -114,18 +163,16 @@ class _EventsComponent extends State<Events> {
           ? MyPageHome()
           : AllEvents(onAction: _setIndexZero),
       extendBody: true,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // Cambio de ubicación del botón flotante
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           try {
             List<Event> recommendedEvents = await getMyEvents("no");
-            List<LatLng> eventCoordinates =
-            recommendedEvents.map((event) => LatLng(event.latitude, event.longitude)).toList();
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => GoogleMapScreen(
-                  events: recommendedEvents, // Cambio aquí
+                  events: recommendedEvents,
                 ),
               ),
             );
