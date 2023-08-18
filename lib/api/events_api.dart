@@ -7,7 +7,7 @@ class EventsApi {
 
   static void configureDio() {
     ///Base url
-    _dio.options.baseUrl = 'http://ec2-3-93-217-163.compute-1.amazonaws.com:3003';
+    _dio.options.baseUrl = 'http://ec2-44-211-205-218.compute-1.amazonaws.com:3003/';
     _dio.options.headers = {
       HttpHeaders.contentTypeHeader: "application/json",
       HttpHeaders.acceptHeader: "application/json",
