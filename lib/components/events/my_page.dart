@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_moviles/components/home/check_events.dart';
 import 'package:project_moviles/components/home/date_now.dart';
+import 'package:project_moviles/components/home/recommended_events.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyPageHome extends StatefulWidget {
@@ -89,7 +90,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                CheckEvents()
+                RecommendedEvents()
               ],
             ),
           ),

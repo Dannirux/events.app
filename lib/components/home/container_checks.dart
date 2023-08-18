@@ -55,8 +55,9 @@ class ContainerChecks extends StatelessWidget {
                 ),
                 Text(
                   event.description,
-                  style:
-                      GoogleFonts.montserrat(color: Colors.white, fontSize: 15),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 15),
                 ),
                 Text(
                   '${DateFormat.MMMd().format(DateTime.now())}',

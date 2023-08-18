@@ -9,6 +9,7 @@ class Event {
   String address;
   String university;
   List<String> images;
+  List<String> categories;
 
   Event({
     required this.id,
@@ -21,6 +22,7 @@ class Event {
     required this.address,
     required this.university,
     required this.images,
+    required this.categories,
   });
 
   // Método factory para crear una instancia de Event desde el JSON decodificado
@@ -36,6 +38,7 @@ class Event {
       address: json['address'] ?? '',
       university: json['university'] ?? '',
       images: json['images'] != null ? List<String>.from(json['images']) : [],
+      categories: json['categories'] != null ? List<String>.from(json['categories']) : [],
     );
   }
 

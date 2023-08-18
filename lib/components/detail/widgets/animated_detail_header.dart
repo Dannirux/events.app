@@ -194,7 +194,7 @@ class _LikesAndSharesContainer extends StatelessWidget {
     }
   }
 
-   void _asistir() async{
+   void _asistir(BuildContext context) async{
 
     final Map<String, dynamic> requestBody = {
       "client": _clientId,
@@ -219,6 +219,21 @@ class _LikesAndSharesContainer extends StatelessWidget {
     } catch (err) {
       // Manejar el error en caso de que ocurra una excepción
       print("Error al enviar la invitación: $err");
+      var error = '';
+      error = err is DioError
+          ? err!.response!.data!["message"].toString()
+          : err.toString();
+      print(err is DioError ? err!.response!.data!.toString() : err.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            error,
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red, // Set the background color to red.
+          duration: Duration(seconds: 3), // Set the duration the snackbar will be visible.
+        ),
+      );
       // Puedes manejar el error o mostrar un mensaje al usuario aquí
     }
   }
@@ -266,7 +281,7 @@ class _LikesAndSharesContainer extends StatelessWidget {
           const Spacer(),
           TextButton.icon(
             onPressed: () async{
-              _loadClientId().then((value) => _asistir());
+              _loadClientId().then((value) => _asistir(context));
             },
             style: TextButton.styleFrom(
               backgroundColor: Colors.blue.shade100,
