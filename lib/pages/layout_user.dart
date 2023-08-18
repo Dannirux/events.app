@@ -114,7 +114,7 @@ class _EventsComponent extends State<Events> {
           ? MyPageHome()
           : AllEvents(onAction: _setIndexZero),
       extendBody: true,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, // Cambio de ubicación del botón flotante
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // Cambio de ubicación del botón flotante
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           try {
@@ -125,7 +125,7 @@ class _EventsComponent extends State<Events> {
               context,
               MaterialPageRoute(
                 builder: (context) => GoogleMapScreen(
-                  eventCoordinates: eventCoordinates,
+                  events: recommendedEvents, // Cambio aquí
                 ),
               ),
             );
