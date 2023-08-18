@@ -31,7 +31,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     final PermissionStatus status = await Permission.location.request();
     if (status.isGranted) {
       _getCurrentLocation();
-      _initializeMarkers();
     } else if (status.isDenied) {
       // Handle denied permission
       // ...
@@ -42,12 +41,17 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   }
 
   Future<void> _getCurrentLocation() async {
-    final Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    setState(() {
-      currentPosition = position;
-    });
+    try {
+      final Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      setState(() {
+        currentPosition = position;
+        _initializeMarkers();
+      });
+    } catch (e) {
+      print('Error obteniendo la ubicación actual: $e');
+    }
   }
 
   void _initializeMarkers() {
@@ -69,6 +73,12 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             infoWindow: InfoWindow(title: 'Mi ubicación'),
           ),
         );
+        mapController.animateCamera(
+          CameraUpdate.newLatLngZoom(
+            LatLng(currentPosition!.latitude, currentPosition!.longitude),
+            13.0,
+          ),
+        );
       }
       isMapReady = true;
     });
@@ -80,18 +90,19 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mi localización'),
+        title: Text('Eventos'),
       ),
       body: GoogleMap(
         onMapCreated: (controller) {
           mapController = controller;
+          _checkLocationPermission();
         },
         initialCameraPosition: currentPosition != null
             ? CameraPosition(
           target: LatLng(currentPosition!.latitude, currentPosition!.longitude),
-          zoom: 15.0,
+          zoom: 12.0,
         )
-            : CameraPosition(target: quitoLatLng, zoom: 15.0),
+            : CameraPosition(target: quitoLatLng, zoom: 12.0),
         markers: isMapReady ? markers : {},
       ),
     );
