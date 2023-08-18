@@ -1,23 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-void main() async {
-  final String address = 'Dirección de tu evento en Quito, Ecuador';
-
-  final Map<String, dynamic>? location = await GoogleMapsApi.getCoordinatesFromAddress(address);
-
-  if (location != null) {
-    final double latitude = location['lat'];
-    final double longitude = location['lng'];
-    print('Latitud: $latitude, Longitud: $longitude');
-  } else {
-    print('No se encontraron coordenadas para la dirección proporcionada en Quito, Ecuador.');
-  }
-}
-
 class GoogleMapsApi {
   static const String _baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
-  static const String _apiKey = 'API_KEY';
+  static const String _apiKey = 'AIzaSyC7BD37UpC2X6ZL7DDF2KcRHWnNlsh3ODo';
 
   static Future<Map<String, dynamic>?> getCoordinatesFromAddress(String address) async {
     final Uri uri = Uri.parse('$_baseUrl?address=$address&key=$_apiKey');
